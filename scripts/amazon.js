@@ -67,6 +67,7 @@ document.querySelector(".cart-quantity").innerText = countCart();
 
 document.querySelectorAll(".add-to-cart-button")
     .forEach((button)=>{
+        let myTimeOut;
         button.addEventListener("click",()=>{
             let matchingItem;
             const itemQuantity = document.querySelector(`.quantity-selector-${button.dataset.productId}`).value;
@@ -88,7 +89,15 @@ document.querySelectorAll(".add-to-cart-button")
 
             console.log(cart);
             document.querySelector(".cart-quantity").innerText = countCart();
-
+            
             document.getElementById(`added-to-cart-${button.dataset.productId}`).classList.add("added-to-cart-after");
+
+            if(myTimeOut){
+                clearTimeout(myTimeOut);
+            }
+
+            myTimeOut = setTimeout(()=>{
+                document.getElementById(`added-to-cart-${button.dataset.productId}`).classList.remove("added-to-cart-after");
+            }, 1500);
         });
 });
