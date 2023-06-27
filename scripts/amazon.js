@@ -1,5 +1,9 @@
 let productsGridHTML = "";
 
+if(JSON.parse(localStorage.getItem('cart'))){
+    cart = JSON.parse(localStorage.getItem('cart'));
+}
+
 products.forEach((product) => {
     productsGridHTML += `
         <div class="product-container">
@@ -99,5 +103,7 @@ document.querySelectorAll(".add-to-cart-button")
             myTimeOut = setTimeout(()=>{
                 document.getElementById(`added-to-cart-${button.dataset.productId}`).classList.remove("added-to-cart-after");
             }, 1500);
+
+            localStorage.setItem('cart', JSON.stringify(cart));
         });
 });
