@@ -1,3 +1,18 @@
+const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const days = ["Monday", "Tuesday", "Wednesday", "Thrusday", "Friday", "Saturday", "Sunday"];
+
+function deliveryDate(deliveryDays) {
+    const date = new Date();
+    date.setDate(date.getDate() + deliveryDays);
+    console.log(date);
+    formattedDate = `${days[date.getDay()]}, ` + `${months[date.getMonth()]} ` + `${date.getDate()}`;
+    return formattedDate;
+}
+
+const slowDeliery = deliveryDate(7);
+const normalDelivery = deliveryDate(3);
+const fastDelivery = deliveryDate(0);
+
 let cartItemContainerHTML = "";
 
 if(JSON.parse(localStorage.getItem('cart'))){
@@ -8,8 +23,6 @@ cart.forEach((item)=>{
     const productInfo = products.find((product) => {
         return product.id === item.productId;
     });
-
-    console.log(productInfo.id);
 
     cartItemContainerHTML += `
         <div class="cart-item-container id=${item.productId}">
@@ -51,7 +64,7 @@ cart.forEach((item)=>{
                             name="delivery-option-2">
                         <div>
                             <div class="delivery-option-date">
-                                Tuesday, June 21
+                                ${slowDeliery}
                             </div>
                             <div class="delivery-option-price">
                                 FREE Shipping
@@ -63,7 +76,7 @@ cart.forEach((item)=>{
                             name="delivery-option-2">
                         <div>
                             <div class="delivery-option-date">
-                                Wednesday, June 15
+                                ${normalDelivery}
                             </div>
                             <div class="delivery-option-price">
                                 $4.99 - Shipping
@@ -75,7 +88,7 @@ cart.forEach((item)=>{
                             name="delivery-option-2">
                         <div>
                             <div class="delivery-option-date">
-                                Monday, June 13
+                                ${fastDelivery}
                             </div>
                             <div class="delivery-option-price">
                                 $9.99 - Shipping
@@ -89,5 +102,4 @@ cart.forEach((item)=>{
 });
 
 document.querySelector(".order-summary").innerHTML = cartItemContainerHTML;
-
 document.querySelector(".checkout-header-middle-section").innerHTML = `Checkout (<a class="return-to-home-link" href="amazon.html">${cart.length} items</a>)`;
