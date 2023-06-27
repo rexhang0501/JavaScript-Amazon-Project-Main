@@ -41,7 +41,7 @@ products.forEach((product) => {
 
         <div class="product-spacer"></div>
 
-        <div class="added-to-cart">
+        <div class="added-to-cart" id="added-to-cart-${product.id}">
         <img src="images/icons/checkmark.png">
             Added
         </div>
@@ -88,5 +88,7 @@ document.querySelectorAll(".add-to-cart-button")
 
             console.log(cart);
             document.querySelector(".cart-quantity").innerText = countCart();
+
+            document.getElementById(`added-to-cart-${button.dataset.productId}`).classList.add("added-to-cart-after");
         });
 });
