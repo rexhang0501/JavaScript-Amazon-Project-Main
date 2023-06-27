@@ -89,3 +89,5 @@ cart.forEach((item)=>{
 });
 
 document.querySelector(".order-summary").innerHTML = cartItemContainerHTML;
+
+document.querySelector(".checkout-header-middle-section").innerHTML = `Checkout (<a class="return-to-home-link" href="amazon.html">${cart.length} items</a>)`;
