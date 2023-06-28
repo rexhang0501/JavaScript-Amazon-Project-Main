@@ -4,12 +4,11 @@ const days = ["Monday", "Tuesday", "Wednesday", "Thrusday", "Friday", "Saturday"
 function deliveryDate(deliveryDays) {
     const date = new Date();
     date.setDate(date.getDate() + deliveryDays);
-    console.log(date);
     formattedDate = `${days[date.getDay()]}, ` + `${months[date.getMonth()]} ` + `${date.getDate()}`;
     return formattedDate;
 }
 
-const slowDeliery = deliveryDate(7);
+const slowDelivery = deliveryDate(7);
 const normalDelivery = deliveryDate(3);
 const fastDelivery = deliveryDate(0);
 
@@ -25,9 +24,9 @@ cart.forEach((item)=>{
     });
 
     cartItemContainerHTML += `
-        <div class="cart-item-container id=${item.productId}">
-            <div class="delivery-date">
-                Delivery date: Wednesday, June 15
+        <div class="cart-item-container">
+            <div class="delivery-date js-delivery-date-${item.productId}">
+                
             </div>
 
             <div class="cart-item-details-grid">
@@ -61,10 +60,10 @@ cart.forEach((item)=>{
 
                     <div class="delivery-option">
                         <input type="radio" class="delivery-option-input"
-                            name="delivery-option-2">
+                            name="delivery-option-${item.productId}" data-product-id="${item.productId}" value="${slowDelivery}">
                         <div>
                             <div class="delivery-option-date">
-                                ${slowDeliery}
+                                ${slowDelivery}
                             </div>
                             <div class="delivery-option-price">
                                 FREE Shipping
@@ -73,7 +72,7 @@ cart.forEach((item)=>{
                     </div>
                     <div class="delivery-option">
                         <input type="radio" checked class="delivery-option-input"
-                            name="delivery-option-2">
+                            name="delivery-option-${item.productId}" data-product-id="${item.productId}" value="${normalDelivery}">
                         <div>
                             <div class="delivery-option-date">
                                 ${normalDelivery}
@@ -85,7 +84,7 @@ cart.forEach((item)=>{
                     </div>
                     <div class="delivery-option">
                         <input type="radio" class="delivery-option-input"
-                            name="delivery-option-2">
+                            name="delivery-option-${item.productId}" data-product-id="${item.productId}" value="${fastDelivery}">
                         <div>
                             <div class="delivery-option-date">
                                 ${fastDelivery}
@@ -103,3 +102,19 @@ cart.forEach((item)=>{
 
 document.querySelector(".order-summary").innerHTML = cartItemContainerHTML;
 document.querySelector(".checkout-header-middle-section").innerHTML = `Checkout (<a class="return-to-home-link" href="amazon.html">${cart.length} items</a>)`;
+
+const radioButtons = document.querySelectorAll(".delivery-option-input");
+radioButtons.forEach((button)=>{
+    button.addEventListener("change", ()=>{
+        const deliveryDate = document.querySelector(`.js-delivery-date-${button.dataset.productId}`);
+        deliveryDate.innerHTML = "Delivery date: " + button.value;
+    });
+
+    if(button.checked === true){
+        document.querySelector(`.js-delivery-date-${button.dataset.productId}`).innerHTML = "Delivery date: " + button.value;
+    }
+});
+
+
+
+
