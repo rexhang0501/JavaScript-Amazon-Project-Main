@@ -13,6 +13,8 @@ const normalDelivery = deliveryDate(3);
 const fastDelivery = deliveryDate(0);
 
 let cartItemContainerHTML = "";
+let itemTotalQuantity = 0;
+let totalPriceCents = 0;
 
 if(JSON.parse(localStorage.getItem('cart'))){
     cart = JSON.parse(localStorage.getItem('cart'));
@@ -22,6 +24,9 @@ cart.forEach((item)=>{
     const productInfo = products.find((product) => {
         return product.id === item.productId;
     });
+
+    itemTotalQuantity += item.quantity;
+    totalPriceCents += productInfo.priceCents * item.quantity;
 
     cartItemContainerHTML += `
         <div class="cart-item-container">
@@ -102,19 +107,70 @@ cart.forEach((item)=>{
 
 document.querySelector(".order-summary").innerHTML = cartItemContainerHTML;
 document.querySelector(".checkout-header-middle-section").innerHTML = `Checkout (<a class="return-to-home-link" href="amazon.html">${cart.length} items</a>)`;
+document.querySelector(".js-payment-summary-items").innerHTML = `Item (${itemTotalQuantity})`;
+document.querySelector(".js-payment-summary-money").innerHTML = `$${((totalPriceCents) / 100).toFixed(2)}`;
+
+let shipping = [];
+let shippingTotal = 0;
 
 const radioButtons = document.querySelectorAll(".delivery-option-input");
 radioButtons.forEach((button)=>{
     button.addEventListener("change", ()=>{
         const deliveryDate = document.querySelector(`.js-delivery-date-${button.dataset.productId}`);
         deliveryDate.innerHTML = "Delivery date: " + button.value;
+
+        const changedShipping = shipping.find((item)=>{
+            return item.id === button.dataset.productId;
+        })
+
+        shipping.forEach((item)=>{
+            if(item.id === changedShipping.id){
+                switch(button.value) {
+                    case slowDelivery:
+                        item.shippingPrice = 0;
+                        break;
+                    case normalDelivery:
+                        item.shippingPrice = 499;
+                        break;
+                    case fastDelivery:
+                        item.shippingPrice = 999;
+                        break;
+                }
+            }
+        });
+
+        shippingTotal = 0;
+        shipping.forEach((item) => {
+            shippingTotal += item.shippingPrice;
+        });
+        
+        document.querySelector(`.js-payment-summary-shipping`).innerHTML = `$${((shippingTotal) / 100).toFixed(2)}`;
+        document.querySelector(".js-payment-summary-subtotal").innerHTML = `$${((totalPriceCents + shippingTotal) / 100).toFixed(2)}`;
+        document.querySelector(".js-payment-summary-tax").innerHTML = `$${(((totalPriceCents + shippingTotal) / 10) / 100).toFixed(2)}`;
+        document.querySelector(".js-payment-summary-total").innerHTML = `$${((((totalPriceCents + shippingTotal) / 10) + (totalPriceCents + shippingTotal)) / 100).toFixed(2)}`;
     });
 
     if(button.checked === true){
         document.querySelector(`.js-delivery-date-${button.dataset.productId}`).innerHTML = "Delivery date: " + button.value;
+        switch(button.value) {
+            case slowDelivery:
+                shipping.push({id: button.dataset.productId, shippingPrice: 0});
+                break;
+            case normalDelivery:
+                shipping.push({id: button.dataset.productId, shippingPrice: 499});
+                break;
+            case fastDelivery:
+                shipping.push({id: button.dataset.productId, shippingPrice: 999});
+                break;
+        }
     }
 });
 
+shipping.forEach((item) => {
+    shippingTotal += item.shippingPrice;
+});
 
-
-
+document.querySelector(".js-payment-summary-shipping").innerHTML = `$${((shippingTotal) / 100).toFixed(2)}`;
+document.querySelector(".js-payment-summary-subtotal").innerHTML = `$${((totalPriceCents + shippingTotal) / 100).toFixed(2)}`;
+document.querySelector(".js-payment-summary-tax").innerHTML = `$${(((totalPriceCents + shippingTotal) / 10) / 100).toFixed(2)}`;
+document.querySelector(".js-payment-summary-total").innerHTML = `$${((((totalPriceCents + shippingTotal) / 10) + (totalPriceCents + shippingTotal)) / 100).toFixed(2)}`;
