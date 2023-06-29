@@ -219,14 +219,15 @@ function removeButtonsEventListeners(){
                         cart.splice(i,1);
                         cartItemContainerHTML = "";
                         totalItemQuantity = 0;
-                        localStorage.setItem('cart', JSON.stringify(cart));
-                        if(JSON.parse(localStorage.getItem('cart'))){
-                            cart = JSON.parse(localStorage.getItem('cart'));
-                        }
                         renderCheckOutOrderSummary();
                         addButtonsEventListeners();
                         removeButtonsEventListeners();
                         renderDeliveryDate();
+                    }
+                    
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    if(JSON.parse(localStorage.getItem('cart'))){
+                        cart = JSON.parse(localStorage.getItem('cart'));
                     }
                 }
             });
