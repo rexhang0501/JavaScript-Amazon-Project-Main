@@ -20,6 +20,7 @@ if(JSON.parse(localStorage.getItem('cart'))){
 }
 
 function renderCheckOutOrderSummary(){
+    console.log(cart);
     cart.forEach((item)=>{
         const productInfo = products.find((product) => {
             return product.id === item.productId;
@@ -104,7 +105,6 @@ function renderCheckOutOrderSummary(){
     });
 
     document.querySelector(".order-summary").innerHTML = cartItemContainerHTML;
-    document.querySelector(".checkout-header-middle-section").innerHTML = `Checkout (<a class="return-to-home-link" href="amazon.html">${totalItemQuantity} items</a>)`;
 }
 renderCheckOutOrderSummary();
 
@@ -137,7 +137,8 @@ function renderOrderSummary(){
 
         totalPriceCents += productInfo.priceCents * item.quantity;
     })
-
+    
+    document.querySelector(".checkout-header-middle-section").innerHTML = `Checkout (<a class="return-to-home-link" href="amazon.html">${totalItemQuantity} items</a>)`;
     document.querySelector(".js-payment-summary-items").innerHTML = `Item (${totalItemQuantity})`;
     document.querySelector(".js-payment-summary-money").innerHTML = `$${((totalPriceCents) / 100).toFixed(2)}`;
     document.querySelector(`.js-payment-summary-shipping`).innerHTML = `$${((calculateShipping()) / 100).toFixed(2)}`;
@@ -175,46 +176,64 @@ function calculateShipping(){
     return shippingTotal;
 }
 
-const addButtons = document.querySelectorAll(".js-add-quantity");
-addButtons.forEach((addButton)=>{
-    addButton.addEventListener("click", ()=>{
-        const addedProduct = cart.find((item) => {
-            return item.productId === addButton.dataset.productId;
-        });
+function addButtonsEventListeners(){
+    const addButtons = document.querySelectorAll(".js-add-quantity");
+    addButtons.forEach((addButton)=>{
+        addButton.addEventListener("click", ()=>{
+            const addedProduct = cart.find((item) => {
+                return item.productId === addButton.dataset.productId;
+            });
 
-        cart.forEach((item)=>{
-            if(item.productId === addedProduct.productId){
-                item.quantity += 1;
-                totalItemQuantity += 1;
-                document.querySelector(`.js-quantity-label-${addButton.dataset.productId}`).innerHTML = item.quantity;
-            }
-        });
-        renderOrderSummary();
-    });
-});
-
-const removeButtons = document.querySelectorAll(".js-remove-quantity");
-removeButtons.forEach((removeButton)=>{
-    removeButton.addEventListener("click", ()=>{
-        const removedProduct = cart.find((item) => {
-            return item.productId === removeButton.dataset.productId;
-        });
-
-        cart.forEach((item, i)=>{
-            if(item.productId === removedProduct.productId){
-                item.quantity -= 1;
-                totalItemQuantity -= 1;
-                document.querySelector(`.js-quantity-label-${removeButton.dataset.productId}`).innerHTML = item.quantity;
-
-                console.log(cart);
-                if(item.quantity === 0){
-                    cart.splice(i, 1);
-                    renderCheckOutOrderSummary();
+            cart.forEach((item)=>{
+                if(item.productId === addedProduct.productId){
+                    item.quantity += 1;
+                    totalItemQuantity += 1;
+                    document.querySelector(`.js-quantity-label-${addButton.dataset.productId}`).innerHTML = item.quantity;
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    if(JSON.parse(localStorage.getItem('cart'))){
+                        cart = JSON.parse(localStorage.getItem('cart'));
+                    }
                 }
-            }
+            });
+            renderOrderSummary();
         });
-        renderOrderSummary();
     });
-});
+}
+addButtonsEventListeners();
+
+function removeButtonsEventListeners(){
+    const removeButtons = document.querySelectorAll(".js-remove-quantity");
+    removeButtons.forEach((removeButton)=>{
+        removeButton.addEventListener("click", ()=>{
+            const removedProduct = cart.find((item) => {
+                return item.productId === removeButton.dataset.productId;
+            });
+
+            cart.forEach((item, i)=>{
+                if(item.productId === removedProduct.productId){
+                    item.quantity -= 1;
+                    totalItemQuantity -= 1;
+                    document.querySelector(`.js-quantity-label-${removeButton.dataset.productId}`).innerHTML = item.quantity;
+
+                    if(item.quantity === 0){
+                        cart.splice(i,1);
+                        cartItemContainerHTML = "";
+                        totalItemQuantity = 0;
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        if(JSON.parse(localStorage.getItem('cart'))){
+                            cart = JSON.parse(localStorage.getItem('cart'));
+                        }
+                        renderCheckOutOrderSummary();
+                        addButtonsEventListeners();
+                        removeButtonsEventListeners();
+                        renderDeliveryDate();
+                    }
+                }
+            });
+            renderOrderSummary();
+        });
+    });
+}
+removeButtonsEventListeners();
 
 
