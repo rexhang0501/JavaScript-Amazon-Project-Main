@@ -269,6 +269,5 @@ document.querySelector(".js-place-order-button").addEventListener("click", ()=>{
         }
     );
     localStorage.setItem('orders', JSON.stringify(orders));
+    localStorage.removeItem('cart');
 });
-
-console.log(cart);
