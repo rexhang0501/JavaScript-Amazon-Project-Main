@@ -1,9 +1,5 @@
 let productsGridHTML = "";
 
-if(JSON.parse(localStorage.getItem('cart'))){
-    cart = JSON.parse(localStorage.getItem('cart'));
-}
-
 products.forEach((product) => {
     productsGridHTML += `
         <div class="product-container">

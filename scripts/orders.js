@@ -1,7 +1,3 @@
-if(JSON.parse(localStorage.getItem('orders'))){
-    orders = JSON.parse(localStorage.getItem('orders'));
-}
-
 let ordersGridHTML = "";
 
 function renderOrdersGridHTML(){
@@ -70,6 +66,7 @@ function renderOrdersGridHTML(){
         document.querySelector(`.js-order-details-grid-${order.orderId}`).innerHTML = orderDetailsGridHTML;
     });
 
+    console.log(countCart());
     document.querySelector(".cart-quantity").innerText = countCart();
 }
 

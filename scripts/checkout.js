@@ -16,10 +16,6 @@ let cartItemContainerHTML = "";
 let totalItemQuantity = 0;
 let orderTotal = 0;
 
-if(JSON.parse(localStorage.getItem('cart'))){
-    cart = JSON.parse(localStorage.getItem('cart'));
-}
-
 function renderCheckOutOrderSummary(){
     cart.forEach((item)=>{
         const productInfo = products.find((product) => {
