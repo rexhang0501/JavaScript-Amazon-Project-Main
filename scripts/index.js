@@ -59,14 +59,6 @@ products.forEach((product) => {
 
 document.querySelector(".products-grid").innerHTML = productsGridHTML;
 
-function countCart(){
-    let cartTotal = 0;
-    cart.forEach((item)=>{
-        cartTotal = cartTotal + item.quantity;
-    });
-    return cartTotal;
-}
-
 document.querySelector(".cart-quantity").innerText = countCart();
 
 document.querySelectorAll(".add-to-cart-button")
@@ -87,7 +79,8 @@ document.querySelectorAll(".add-to-cart-button")
             } else {
                 cart.push({
                     productId: button.dataset.productId,
-                    quantity: Number(itemQuantity)
+                    quantity: Number(itemQuantity),
+                    deliveryDate: ""
                 });
             }
 
