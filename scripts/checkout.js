@@ -14,13 +14,13 @@ const fastDelivery = calculateDeliveryDate(0);
 
 let cartItemContainerHTML = "";
 let totalItemQuantity = 0;
+let orderTotal = 0;
 
 if(JSON.parse(localStorage.getItem('cart'))){
     cart = JSON.parse(localStorage.getItem('cart'));
 }
 
 function renderCheckOutOrderSummary(){
-    console.log(cart);
     cart.forEach((item)=>{
         const productInfo = products.find((product) => {
             return product.id === item.productId;
@@ -112,20 +112,29 @@ function renderDeliveryDate(){
     const radioButtons = document.querySelectorAll(".delivery-option-input");
     radioButtons.forEach((radioButton) => {
         if(radioButton.checked === true){
+            const cartItem = cart.find((item) => {
+                return item.productId === radioButton.dataset.productId;
+            });
+            if(cartItem){
+                cartItem.deliveryDate = radioButton.value;
+            }
             document.querySelector(`.js-delivery-date-${radioButton.dataset.productId}`).innerHTML = "Delivery date: " + radioButton.value;
         }
     });
 }
 renderDeliveryDate();
 
-const radioButtons = document.querySelectorAll(".delivery-option-input");
-radioButtons.forEach((radioButton) => {
-    radioButton.addEventListener("change", ()=>{
-        renderDeliveryDate();
-        calculateShipping();
-        renderOrderSummary();
+function radioButtonsEventListeners(){ 
+    const radioButtons = document.querySelectorAll(".delivery-option-input");
+    radioButtons.forEach((radioButton) => {
+        radioButton.addEventListener("change", ()=>{
+            renderDeliveryDate();
+            calculateShipping();
+            renderOrderSummary();
+        });
     });
-});
+}
+radioButtonsEventListeners();
 
 function renderOrderSummary(){
     let totalPriceCents = 0;
@@ -145,6 +154,7 @@ function renderOrderSummary(){
     document.querySelector(".js-payment-summary-subtotal").innerHTML = `$${((totalPriceCents + calculateShipping()) / 100).toFixed(2)}`;
     document.querySelector(".js-payment-summary-tax").innerHTML = `$${(((totalPriceCents + calculateShipping()) / 10) / 100).toFixed(2)}`;
     document.querySelector(".js-payment-summary-total").innerHTML = `$${((((totalPriceCents + calculateShipping()) / 10) + (totalPriceCents + calculateShipping())) / 100).toFixed(2)}`;
+    orderTotal = (((totalPriceCents + calculateShipping()) / 10) + (totalPriceCents + calculateShipping()));
 }
 renderOrderSummary();
 
@@ -221,6 +231,7 @@ function removeButtonsEventListeners(){
                         totalItemQuantity = 0;
                         renderCheckOutOrderSummary();
                         addButtonsEventListeners();
+                        radioButtonsEventListeners();
                         removeButtonsEventListeners();
                         renderDeliveryDate();
                     }
@@ -237,4 +248,31 @@ function removeButtonsEventListeners(){
 }
 removeButtonsEventListeners();
 
+function makeid(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+}
 
+document.querySelector(".js-place-order-button").addEventListener("click", ()=>{
+    if(JSON.parse(localStorage.getItem('orders'))){
+        orders = JSON.parse(localStorage.getItem('orders'));
+    }
+    orders.push(
+        {
+            orderId: makeid(10),
+            orderDate: calculateDeliveryDate(0),
+            orderTotal: orderTotal,
+            orderItem: cart,
+        }
+    );
+    localStorage.setItem('orders', JSON.stringify(orders));
+});
+
+console.log(cart);
