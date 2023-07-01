@@ -50,8 +50,7 @@ function renderOrdersGridHTML(){
                         Quantity: ${orderItem.quantity}
                     </div>
                     <button class="buy-again-button button-primary">
-                    <img class="buy-again-icon" src="images/icons/buy-again.png">
-                    <span class="buy-again-message">Buy it again</span>
+                        <span class="buy-again-message" data-order-id="${order.orderId}" data-order-item-product-id="${orderItem.productId}">Remove Item</span>
                     </button>
                 </div>
                 <div class="product-actions">
@@ -66,8 +65,39 @@ function renderOrdersGridHTML(){
         document.querySelector(`.js-order-details-grid-${order.orderId}`).innerHTML = orderDetailsGridHTML;
     });
 
-    console.log(countCart());
     document.querySelector(".cart-quantity").innerText = countCart();
 }
-
 renderOrdersGridHTML();
+
+function removeOrderEventListeners(){
+    const removeOrderButtons = document.querySelectorAll(".buy-again-message");
+    removeOrderButtons.forEach((button)=>{
+        button.addEventListener("click", ()=>{
+            const order = orders.find((order) => {
+                return order.orderId === button.dataset.orderId;
+            });
+            const orderProduct = order.orderItem.find((orderItem) => {
+                return orderItem.productId === button.dataset.orderItemProductId;
+            });
+
+            order.orderItem.forEach((orderItem, i)=>{
+                if(orderItem.productId === orderProduct.productId){
+                    order.orderItem.splice(i, 1);
+
+                    if(order.orderItem.length === 0){
+                        orders.forEach((oriOrder, i)=>{
+                            if(oriOrder.orderId === order.orderId){
+                                orders.splice(i, 1);
+                            }
+                        });
+                    }
+                    
+                    ordersGridHTML = ""
+                    renderOrdersGridHTML();
+                    removeOrderEventListeners();
+                }
+            });
+        });
+    });
+}
+removeOrderEventListeners();
