@@ -49,9 +49,6 @@ function renderOrdersGridHTML(){
                     <div class="product-quantity">
                         Quantity: ${orderItem.quantity}
                     </div>
-                    <button class="buy-again-button button-primary">
-                        <span class="buy-again-message" data-order-id="${order.orderId}" data-order-item-product-id="${orderItem.productId}">Remove Item</span>
-                    </button>
                 </div>
                 <div class="product-actions">
                     <a href="tracking.html">
@@ -68,36 +65,3 @@ function renderOrdersGridHTML(){
     document.querySelector(".cart-quantity").innerText = countCart();
 }
 renderOrdersGridHTML();
-
-function removeOrderEventListeners(){
-    const removeOrderButtons = document.querySelectorAll(".buy-again-message");
-    removeOrderButtons.forEach((button)=>{
-        button.addEventListener("click", ()=>{
-            const order = orders.find((order) => {
-                return order.orderId === button.dataset.orderId;
-            });
-            const orderProduct = order.orderItem.find((orderItem) => {
-                return orderItem.productId === button.dataset.orderItemProductId;
-            });
-
-            order.orderItem.forEach((orderItem, i)=>{
-                if(orderItem.productId === orderProduct.productId){
-                    order.orderItem.splice(i, 1);
-
-                    if(order.orderItem.length === 0){
-                        orders.forEach((oriOrder, i)=>{
-                            if(oriOrder.orderId === order.orderId){
-                                orders.splice(i, 1);
-                            }
-                        });
-                    }
-                    
-                    ordersGridHTML = ""
-                    renderOrdersGridHTML();
-                    removeOrderEventListeners();
-                }
-            });
-        });
-    });
-}
-removeOrderEventListeners();
