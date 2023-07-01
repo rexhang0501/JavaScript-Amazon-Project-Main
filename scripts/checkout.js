@@ -257,17 +257,23 @@ function makeid(length) {
 }
 
 document.querySelector(".js-place-order-button").addEventListener("click", ()=>{
-    if(JSON.parse(localStorage.getItem('orders'))){
-        orders = JSON.parse(localStorage.getItem('orders'));
-    }
-    orders.push(
-        {
-            orderId: makeid(10),
-            orderDate: calculateDeliveryDate(0),
-            orderTotal: orderTotal,
-            orderItem: cart,
+    if(cart.length === 0){
+        alert("Your cart is empty");
+        window.location.replace("index.html");
+    } else {
+        if(JSON.parse(localStorage.getItem('orders'))){
+            orders = JSON.parse(localStorage.getItem('orders'));
         }
-    );
-    localStorage.setItem('orders', JSON.stringify(orders));
-    localStorage.removeItem('cart');
+        orders.push(
+            {
+                orderId: makeid(10),
+                orderDate: calculateDeliveryDate(0),
+                orderTotal: orderTotal,
+                orderItem: cart,
+            }
+        );
+        localStorage.setItem('orders', JSON.stringify(orders));
+        localStorage.removeItem('cart');
+        window.location.replace("orders.html");
+    }
 });
