@@ -4,8 +4,8 @@ const days = ["Monday", "Tuesday", "Wednesday", "Thrusday", "Friday", "Saturday"
 function calculateDeliveryDate(deliveryDays) {
     const date = new Date();
     date.setDate(date.getDate() + deliveryDays);
-    formattedDate = `${days[date.getDay()]}, ` + `${months[date.getMonth()]} ` + `${date.getDate()}`;
-    return formattedDate;
+    formattedDate = days[date.getDay()] +", " + months[date.getMonth()] + " " + date.getDate();
+    return formattedDate.toString();
 }
 
 const slowDelivery = calculateDeliveryDate(7);

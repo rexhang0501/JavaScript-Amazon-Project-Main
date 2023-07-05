@@ -52,9 +52,9 @@ function renderOrdersGridHTML(){
                 </div>
                 <div class="product-actions">
                     <a href="tracking.html">
-                    <button class="track-package-button button-secondary">
-                        Track package
-                    </button>
+                        <button class="track-package-button button-secondary" data-order-id=${order.orderId} data-order-id-product-id=${orderItem.productId}>
+                            Track package
+                        </button>
                     </a>
                 </div>
             `;
@@ -65,3 +65,21 @@ function renderOrdersGridHTML(){
     document.querySelector(".cart-quantity").innerText = countCart();
 }
 renderOrdersGridHTML();
+
+function trackPackageButton(){
+    const trackingButtons = document.querySelectorAll(".track-package-button");
+    trackingButtons.forEach((button)=>{
+        button.addEventListener("click", ()=>{
+            const order = orders.find((order) => {
+                return order.orderId === button.dataset.orderId;
+            });
+
+            const product = order.orderItem.find((orderItem)=>{
+                return orderItem.productId === button.dataset.orderIdProductId;
+            })
+            localStorage.removeItem('tracking');
+            localStorage.setItem('tracking', JSON.stringify(product));
+        });
+    });
+}
+trackPackageButton();
