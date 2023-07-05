@@ -80,7 +80,6 @@ document.querySelectorAll(".add-to-cart-button")
                 });
             }
 
-            console.log(cart);
             document.querySelector(".cart-quantity").innerText = countCart();
             
             document.getElementById(`added-to-cart-${button.dataset.productId}`).classList.add("added-to-cart-after");
